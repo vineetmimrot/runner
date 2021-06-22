@@ -12,6 +12,7 @@ Though the current runner has the capability to detect some type of credentials 
 
 ## Decision
 Microsoft Security team (Strike) provides [CredScan library](https://strikecommunity.azurewebsites.net/articles/4114/credential-scanner-overview.html) which can detect an exhaustive list of secret types like [[1]](https://strikecommunity.azurewebsites.net/articles/7016/credential-types-detected-by-credscan-v2.html) & [[2]](https://github.com/milidoshi26/runner/blob/main/src/Misc/layoutbin/ConfigFiles/FullTextProvider.json).
+We have created PoC and found that each invocation of CredScan takes around 15-20ms and for a workflow of 200 lines it takes around 5s extra. 
 We can use this library into Runner to detect many types of secret and thus prevent any secret leakage.
 
 ## Consequences
