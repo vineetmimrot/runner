@@ -6,8 +6,8 @@
 
 ## Context
 Currently, there are couple of scenario's where user's credentials can leak into workflow logs during an Action run.
-- User is using some CLI based action and his/her script can print credentials on console.
-- Action has a bug due to which it prints user's credential. This could happen due to an unintentional oversight on Author's part.
+- User is using some CLI based action like *runs*, *azure-cli*, *powershell*, etc and his/her script can print credentials on console.
+- Action has a bug due to which it prints user credentials. This could happen due to an unintentional oversight on Author's part.
 Though, the current runner has the capability to detect secrets like GITHUB_TOKEN, secrets set by the user under repo/org/environment and ::add-mask:: tag set by the user, etc but it is not exhaustive.
 
 ## Decision
@@ -16,4 +16,4 @@ We can extend the existing SecretMasker of Runner with CredScan library to detec
 We have created PoC and found that each invocation of CredScan takes around 15-20ms.
 
 ## Consequences
-By using this library into Runner, we can prevent many types of secret leaks.
+By using this library into Runner, it will give a really wide coverage of credential types without each Action need to explicitly take care of it. This will be useful for CD workflows which deal with sensitive credentials.
