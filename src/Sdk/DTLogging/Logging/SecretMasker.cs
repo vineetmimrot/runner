@@ -250,7 +250,7 @@ namespace GitHub.DistributedTask.Logging
             // Merge positions into ranges of characters to replace.
             List<ReplacementPosition> replacementPositions = new List<ReplacementPosition>();
             ReplacementPosition currentReplacement = null;
-            if(secretPositions.Count != 0){
+            if(secretPositions.Count != 0) {
                 foreach (ReplacementPosition secretPosition in secretPositions.OrderBy(x => x.Start))
             {
                 if (currentReplacement == null)
