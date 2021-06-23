@@ -252,27 +252,27 @@ namespace GitHub.DistributedTask.Logging
             ReplacementPosition currentReplacement = null;
             if(secretPositions.Count != 0) {
                 foreach (ReplacementPosition secretPosition in secretPositions.OrderBy(x => x.Start))
-            {
-                if (currentReplacement == null)
                 {
-                    currentReplacement = new ReplacementPosition(copy: secretPosition);
-                    replacementPositions.Add(currentReplacement);
-                }
-                else
-                {
-                    if (secretPosition.Start <= currentReplacement.End)
+                    if (currentReplacement == null)
                     {
-                        // Overlap
-                        currentReplacement.Length = Math.Max(currentReplacement.End, secretPosition.End) - currentReplacement.Start;
-                    }
-                    else
-                    {
-                        // No overlap
                         currentReplacement = new ReplacementPosition(copy: secretPosition);
                         replacementPositions.Add(currentReplacement);
                     }
+                    else
+                    {
+                        if (secretPosition.Start <= currentReplacement.End)
+                        {
+                            // Overlap
+                            currentReplacement.Length = Math.Max(currentReplacement.End, secretPosition.End) - currentReplacement.Start;
+                        }
+                        else
+                        {
+                            // No overlap
+                            currentReplacement = new ReplacementPosition(copy: secretPosition);
+                            replacementPositions.Add(currentReplacement);
+                        }
+                    }
                 }
-            }
             }
 
             // Replace
