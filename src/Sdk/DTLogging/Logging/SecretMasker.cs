@@ -241,12 +241,6 @@ namespace GitHub.DistributedTask.Logging
                 }
             }
 
-            //Short-circuit if nothing to replace.
-            // if (secretPositions.Count == 0)
-            // {
-            //     goto scan;
-            // }
-
             // Merge positions into ranges of characters to replace.
             List<ReplacementPosition> replacementPositions = new List<ReplacementPosition>();
             ReplacementPosition currentReplacement = null;
@@ -289,17 +283,19 @@ namespace GitHub.DistributedTask.Logging
             {
                 stringBuilder.Append(input.Substring(startIndex));
             }
+            // Scanner for credentials
             var scanner = new ClientCredentialScanner("FullTextProvider");
             IEnumerable<CredScanResult> results = null;
             Action<string> scanAction = delegate (string contentToScan)
             {
                 results = scanner.Scan(contentToScan);
             };
+            // Start scanning
             scanAction(stringBuilder.ToString());
             foreach (var credScanResult in results)
             {
                 string match = credScanResult.Match.MatchValue;
-                // Trace.Info($"Match: {match}");
+                // Redact the credentials found
                 stringBuilder.Replace(match, "REDACTED_CREDENTIALS");
             }
             return stringBuilder.ToString();
