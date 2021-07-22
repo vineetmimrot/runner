@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Microsoft.Security.CredScan.KnowledgeBase.Client;
+using Newtonsoft.Json;
 
 namespace GitHub.DistributedTask.Logging
 {
@@ -239,34 +241,30 @@ namespace GitHub.DistributedTask.Logging
                 }
             }
 
-            // Short-circuit if nothing to replace.
-            if (secretPositions.Count == 0)
-            {
-                return input;
-            }
-
             // Merge positions into ranges of characters to replace.
             List<ReplacementPosition> replacementPositions = new List<ReplacementPosition>();
             ReplacementPosition currentReplacement = null;
-            foreach (ReplacementPosition secretPosition in secretPositions.OrderBy(x => x.Start))
-            {
-                if (currentReplacement == null)
+            if(secretPositions.Count != 0) {
+                foreach (ReplacementPosition secretPosition in secretPositions.OrderBy(x => x.Start))
                 {
-                    currentReplacement = new ReplacementPosition(copy: secretPosition);
-                    replacementPositions.Add(currentReplacement);
-                }
-                else
-                {
-                    if (secretPosition.Start <= currentReplacement.End)
+                    if (currentReplacement == null)
                     {
-                        // Overlap
-                        currentReplacement.Length = Math.Max(currentReplacement.End, secretPosition.End) - currentReplacement.Start;
+                        currentReplacement = new ReplacementPosition(copy: secretPosition);
+                        replacementPositions.Add(currentReplacement);
                     }
                     else
                     {
-                        // No overlap
-                        currentReplacement = new ReplacementPosition(copy: secretPosition);
-                        replacementPositions.Add(currentReplacement);
+                        if (secretPosition.Start <= currentReplacement.End)
+                        {
+                            // Overlap
+                            currentReplacement.Length = Math.Max(currentReplacement.End, secretPosition.End) - currentReplacement.Start;
+                        }
+                        else
+                        {
+                            // No overlap
+                            currentReplacement = new ReplacementPosition(copy: secretPosition);
+                            replacementPositions.Add(currentReplacement);
+                        }
                     }
                 }
             }
@@ -285,7 +283,21 @@ namespace GitHub.DistributedTask.Logging
             {
                 stringBuilder.Append(input.Substring(startIndex));
             }
-
+            // Scanner for credentials
+            var scanner = new ClientCredentialScanner("FullTextProvider");
+            IEnumerable<CredScanResult> results = null;
+            Action<string> scanAction = delegate (string contentToScan)
+            {
+                results = scanner.Scan(contentToScan);
+            };
+            // Start scanning
+            scanAction(stringBuilder.ToString());
+            foreach (var credScanResult in results)
+            {
+                string match = credScanResult.Match.MatchValue;
+                // Redact the credentials found
+                stringBuilder.Replace(match, "REDACTED_CREDENTIALS");
+            }
             return stringBuilder.ToString();
         }
 

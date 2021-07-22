@@ -16,7 +16,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Win32.Registry" Version="4.4.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.0" />
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.4" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.2.1" />
         <PackageReference Include="System.Security.Cryptography.Cng" Version="4.4.0" />
@@ -30,5 +30,25 @@
         <EmbeddedResource Include="DTPipelines\workflow-v1.0.json">
             <LogicalName>GitHub.DistributedTask.Pipelines.ObjectTemplating.workflow-v1.0.json</LogicalName>
         </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="Microsoft.Security.CredScan.KnowledgeBase.Client" />
+      <None Remove="Microsoft.Security.CredScan.KnowledgeBase" />
+      <None Remove="Microsoft.Security.RegularExpressions" />
+      <None Remove="Microsoft.Security.Telemetry.Interfaces" />
+    </ItemGroup>
+    <ItemGroup>
+      <Reference Include="Microsoft.Security.CredScan.KnowledgeBase.Client">
+        <HintPath>..\Microsoft.Security.CredScan.KnowledgeBase.Client.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Security.CredScan.KnowledgeBase">
+        <HintPath>..\Microsoft.Security.CredScan.KnowledgeBase.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Security.RegularExpressions">
+        <HintPath>..\Microsoft.Security.RegularExpressions.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Security.Telemetry.Interfaces">
+        <HintPath>..\Microsoft.Security.Telemetry.Interfaces.dll</HintPath>
+      </Reference>
     </ItemGroup>
 </Project>

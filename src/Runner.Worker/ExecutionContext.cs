@@ -712,7 +712,12 @@ namespace GitHub.Runner.Worker
         // the rule is command messages - which should be crafted using strongly typed wrapper methods.
         public long Write(string tag, string message)
         {
+            var watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
             string msg = HostContext.SecretMasker.MaskSecrets($"{tag}{message}");
+            watch.Stop();
+            Trace.Info($"Execution Time: {watch.ElapsedMilliseconds} ms");
+            Trace.Info($"Message length: {msg.Length}");
             long totalLines;
             lock (_loggerLock)
             {
